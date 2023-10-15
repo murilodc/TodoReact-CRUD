@@ -6,11 +6,14 @@ const bg =
   "https://images.unsplash.com/photo-1616400619175-5beda3a17896?ixlib=rb-4.0.3&q=80&w=2874&auto=format&fit=crop&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8";
 
 function HomePage() {
+  const [totalPages, setTotalPages] = React.useState(0);
   const [page, setPage] = React.useState(1);
   const [todos, setTodos] = React.useState([]);
+  const hasMorePages = totalPages > page;
   React.useEffect(() => {
-    todoController.get().then(({ todos }) => {
+    todoController.get({ page }).then(({ todos, pages }) => {
       setTodos(todos);
+      setTotalPages(pages);
     });
   }, []);
   return (
@@ -77,22 +80,27 @@ function HomePage() {
               </td>
             </tr>
 
-            <tr>
-              <td colSpan={4} align="center" style={{ textAlign: "center" }}>
-                <button data-type="load-more" onClick={() => setPage(page + 1)}>
-                  Página {page} ,Carregar mais{" "}
-                  <span
-                    style={{
-                      display: "inline-block",
-                      marginLeft: "4px",
-                      fontSize: "1.2em",
-                    }}
+            {hasMorePages && (
+              <tr>
+                <td colSpan={4} align="center" style={{ textAlign: "center" }}>
+                  <button
+                    data-type="load-more"
+                    onClick={() => setPage(page + 1)}
                   >
-                    ↓
-                  </span>
-                </button>
-              </td>
-            </tr>
+                    Página {page} ,Carregar mais{" "}
+                    <span
+                      style={{
+                        display: "inline-block",
+                        marginLeft: "4px",
+                        fontSize: "1.2em",
+                      }}
+                    >
+                      ↓
+                    </span>
+                  </button>
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </section>

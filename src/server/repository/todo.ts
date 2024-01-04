@@ -54,7 +54,7 @@ async function toggleDone(id: string): Promise<Todo> {
 
   return updatedTodo;
 }
-//test git wsl
+
 async function deleteById(id: string) {
   const ALL_TODOS = read();
   const todo = ALL_TODOS.find((todo) => todo.id === id);

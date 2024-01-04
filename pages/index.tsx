@@ -1,18 +1,19 @@
-/* eslint-disable no-console */
-import { todoController } from "@ui/controller/todo";
-import { GlobalStyles } from "@ui/theme/GlobalStyles";
 import React from "react";
-const bg =
-  "https://images.unsplash.com/photo-1616400619175-5beda3a17896?ixlib=rb-4.0.3&q=80&w=2874&auto=format&fit=crop&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8";
+import { GlobalStyles } from "@ui/theme/GlobalStyles";
+import { todoController } from "@ui/controller/todo";
+
+// const bg = "https://mariosouto.com/cursos/crudcomqualidade/bg";
+const bg = "/bg.jpeg"; // inside public folder
 
 interface HomeTodo {
   id: string;
   content: string;
+  done: boolean;
 }
 
 function HomePage() {
-  // const [initialLoadCompleote, setInitialLoadComplete] = React.useState(false);
   const initialLoadComplete = React.useRef(false);
+  const [newTodoContent, setNewTodoContent] = React.useState("");
   const [totalPages, setTotalPages] = React.useState(0);
   const [page, setPage] = React.useState(1);
   const [search, setSearch] = React.useState("");
@@ -27,7 +28,6 @@ function HomePage() {
   const hasNoTodos = homeTodos.length === 0 && !isLoading;
 
   React.useEffect(() => {
-    // setInitialLoadComplete(true);
     if (!initialLoadComplete.current) {
       todoController
         .get({ page })
@@ -41,6 +41,7 @@ function HomePage() {
         });
     }
   }, []);
+
   return (
     <main>
       <GlobalStyles themeName="devsoutinho" />
@@ -52,8 +53,36 @@ function HomePage() {
         <div className="typewriter">
           <h1>O que fazer hoje?</h1>
         </div>
-        <form>
-          <input type="text" placeholder="Correr, Estudar..." />
+        <form
+          onSubmit={(event) => {
+            event.preventDefault();
+            todoController.create({
+              content: newTodoContent,
+              // .then
+              onSuccess(todo: HomeTodo) {
+                setTodos((oldTodos) => {
+                  return [todo, ...oldTodos];
+                });
+                setNewTodoContent("");
+              },
+              // .catch
+              onError(customMessage) {
+                alert(
+                  customMessage ||
+                    "Você precisa ter um conteúdo para criar uma TODO!"
+                );
+              },
+            });
+          }}
+        >
+          <input
+            type="text"
+            placeholder="Correr, Estudar..."
+            value={newTodoContent}
+            onChange={function newTodoHandler(event) {
+              setNewTodoContent(event.target.value);
+            }}
+          />
           <button type="submit" aria-label="Adicionar novo item">
             +
           </button>
@@ -65,6 +94,7 @@ function HomePage() {
           <input
             type="text"
             placeholder="Filtrar lista atual, ex: Dentista"
+            value={search}
             onChange={function handleSearch(event) {
               setSearch(event.target.value);
             }}
@@ -84,16 +114,63 @@ function HomePage() {
           </thead>
 
           <tbody>
-            {homeTodos.map((currentTodo) => {
+            {homeTodos.map((todo) => {
               return (
-                <tr key={currentTodo.id}>
+                <tr key={todo.id}>
                   <td>
-                    <input type="checkbox" />
+                    <input
+                      type="checkbox"
+                      checked={todo.done}
+                      onChange={function handleToggle() {
+                        todoController.toggleDone({
+                          id: todo.id,
+                          onError() {
+                            alert("Falha ao atualizar a TODO :(");
+                          },
+                          updateTodoOnScreen() {
+                            setTodos((currentTodos) => {
+                              return currentTodos.map((currentTodo) => {
+                                if (currentTodo.id === todo.id) {
+                                  return {
+                                    ...currentTodo,
+                                    done: !currentTodo.done,
+                                  };
+                                }
+                                return currentTodo;
+                              });
+                            });
+                          },
+                        });
+                      }}
+                    />
                   </td>
-                  <td>d4f26</td>
-                  <td>{currentTodo.content}</td>
+                  <td>{todo.id.substring(0, 4)}</td>
+                  <td>
+                    {!todo.done && todo.content}
+                    {todo.done && <s>{todo.content}</s>}
+                  </td>
                   <td align="right">
-                    <button data-type="delete">Apagar</button>
+                    <button
+                      data-type="delete"
+                      onClick={function handleClick() {
+                        todoController
+                          .deleteById(todo.id)
+                          .then(() => {
+                            setTodos((currentTodos) => {
+                              return currentTodos.filter((currentTodo) => {
+                                if (currentTodo.id === todo.id) return false;
+
+                                return true;
+                              });
+                            });
+                          })
+                          .catch(() => {
+                            console.error("Failed to delete");
+                          });
+                      }}
+                    >
+                      Apagar
+                    </button>
                   </td>
                 </tr>
               );
@@ -106,6 +183,7 @@ function HomePage() {
                 </td>
               </tr>
             )}
+
             {hasNoTodos && (
               <tr>
                 <td colSpan={4} align="center">
@@ -123,6 +201,7 @@ function HomePage() {
                       setIsLoading(true);
                       const nextPage = page + 1;
                       setPage(nextPage);
+
                       todoController
                         .get({ page: nextPage })
                         .then(({ todos, pages }) => {
@@ -136,7 +215,7 @@ function HomePage() {
                         });
                     }}
                   >
-                    Página {page} ,Carregar mais{" "}
+                    Página {page}, Carregar mais{" "}
                     <span
                       style={{
                         display: "inline-block",

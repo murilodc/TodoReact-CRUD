@@ -6,11 +6,13 @@
   "scripts": {
     "startCrud": "npx ts-node /home/murilo/Development/CursoMario/core/crud.ts",
     "devCrud": "nodemon --ext ts,tsx --exec 'npm run start'",
-    "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "next dev",
     "start": "next start",
     "lint": "eslint './**/*.{jsx,ts,tsx}'",
-    "lint:fix": "npm run lint -- --fix"
+    "lint:fix": "npm run lint -- --fix",
+    "cy:open": "cypress open",
+    "cy:run": "cypress run",
+    "test": "start-server-and-test dev http://localhost:3000 cy:run"
   },
   "author": "",
   "license": "ISC",
@@ -25,6 +27,7 @@
     "@types/react": "18.2.22",
     "@types/uuid": "^9.0.1",
     "@typescript-eslint/eslint-plugin": "^5.56.0",
+    "cypress": "^13.6.2",
     "eslint": "^8.36.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-import": "^2.27.5",
@@ -34,6 +37,7 @@
     "eslint-plugin-react": "^7.32.2",
     "nodemon": "^2.0.21",
     "prettier": "^2.8.7",
+    "start-server-and-test": "^2.0.3",
     "typescript": "5.2.2"
   }
 }

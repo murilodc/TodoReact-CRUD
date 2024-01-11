@@ -3,7 +3,7 @@ import { GlobalStyles } from "@ui/theme/GlobalStyles";
 import { todoController } from "@ui/controller/todo";
 
 // const bg = "https://mariosouto.com/cursos/crudcomqualidade/bg";
-const bg = "/bg.jpeg"; // inside public folder
+const bg = "/bg.jpeg"; // inside public folde
 
 interface HomeTodo {
   id: string;

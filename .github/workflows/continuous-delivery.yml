@@ -11,7 +11,7 @@ on:
 env:
   VERCEL_ORG_ID: yr1n6Im04KZwSRAUIDOY2fab
   VERCEL_PROJECT_ID: prj_ZZD11vohKsIchfAV9yxaZ0LVc1eF
-knwteG86FDwUTnP7yygGEZwI
+
 jobs: 
   deploy: 
     runs-on: ubuntu-latest

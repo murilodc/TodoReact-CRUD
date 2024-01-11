@@ -1,6 +1,6 @@
 name: "[CD] Continuous Delivery"
 
-# Sempre que tiver um commit ou um PR for aberto
+# Sempre que tiver um commit ou um PR for
 # on:
 #   push:
 #     branches: [ main ]

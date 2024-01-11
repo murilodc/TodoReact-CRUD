@@ -1,19 +1,15 @@
 name: "[CD] Continuous Delivery"
 
-# Sempre que tiver um commit ou um PR for
-# on:
-#   push:
-#     branches: [ main ]
 on:
-  pull_request:
-    types: [opened, synchronize]
+  push:
+    branches: [main]
 
 env:
   VERCEL_ORG_ID: yr1n6Im04KZwSRAUIDOY2fab
   VERCEL_PROJECT_ID: prj_ZZD11vohKsIchfAV9yxaZ0LVc1eF
 
-jobs: 
-  deploy: 
+jobs:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       ## [Common_CI_Steps]

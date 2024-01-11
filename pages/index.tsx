@@ -8,6 +8,7 @@ const bg = "/bg.jpeg"; // inside public folder
 interface HomeTodo {
   id: string;
   content: string;
+  date: string;
   done: boolean;
 }
 
@@ -32,7 +33,7 @@ function HomePage() {
       todoController
         .get({ page })
         .then(({ todos, pages }) => {
-          setTodos(todos);
+          setTodos(todos as HomeTodo[]);
           setTotalPages(pages);
         })
         .finally(() => {
@@ -206,8 +207,8 @@ function HomePage() {
                       todoController
                         .get({ page: nextPage })
                         .then(({ todos, pages }) => {
-                          setTodos((oldTodos) => {
-                            return [...oldTodos, ...todos];
+                          setTodos((oldTodos: HomeTodo[]) => {
+                            return [...oldTodos, ...todos] as HomeTodo[];
                           });
                           setTotalPages(pages);
                         })
